@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { TagInputDialog } from '@/components/TagInputDialog';
 import { TagContentDialog } from '@/components/TagContentDialog';
+import { EditDialog } from '@/components/EditDialog';
 import { Editor, type XmlNode } from '@/components/Editor';
 import { useShortcuts } from '@/hooks/useShortcuts';
 
 const HomePage: React.FC = () => {
   const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
   const [isContentDialogOpen, setIsContentDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [currentTagName, setCurrentTagName] = useState<string>('');
   
   // Initialiser avec une balise <prompt> de base
@@ -56,6 +58,12 @@ const HomePage: React.FC = () => {
     onOpenContentDialog: () => setIsContentDialogOpen(true),
     onNavigateUp: () => navigateNodes('up'),
     onNavigateDown: () => navigateNodes('down'),
+    onDelete: () => handleDeleteNode(),
+    onEdit: () => {
+      if (selectedNodeId) {
+        setIsEditDialogOpen(true);
+      }
+    },
   });
 
   // Générer un ID unique
@@ -127,10 +135,11 @@ const HomePage: React.FC = () => {
         id: generateId(),
         type: 'tag',
         tagName: currentTagName,
-        content: content || undefined, // Ajouter le contenu directement dans la balise
+        content: content.trim() ? content.trim() : undefined, // Ajouter le contenu s'il existe
         children: []
       };
       insertNode(newTag);
+      setCurrentTagName(''); // Réinitialiser AVANT de fermer la dialog
     } else {
       // Insérer juste du contenu
       const newContent: XmlNode = {
@@ -141,8 +150,7 @@ const HomePage: React.FC = () => {
       insertNode(newContent);
     }
     
-    // Réinitialiser
-    setCurrentTagName('');
+    // Réinitialiser et fermer
     setIsContentDialogOpen(false);
   };
 
@@ -164,6 +172,54 @@ const HomePage: React.FC = () => {
     setIsContentDialogOpen(open);
   };
 
+  // Trouver le nœud sélectionné
+  const getSelectedNode = (): XmlNode | null => {
+    if (!selectedNodeId) return null;
+    const flatNodes = flattenNodes(nodes);
+    return flatNodes.find(n => n.id === selectedNodeId) || null;
+  };
+
+  // Mettre à jour un nœud
+  const handleUpdateNode = (updatedNode: XmlNode) => {
+    const updateNodesRecursive = (nodes: XmlNode[]): XmlNode[] => {
+      return nodes.map(node => {
+        if (node.id === updatedNode.id) {
+          return updatedNode;
+        }
+        if (node.children) {
+          return {
+            ...node,
+            children: updateNodesRecursive(node.children)
+          };
+        }
+        return node;
+      });
+    };
+    setNodes(updateNodesRecursive(nodes));
+  };
+
+  // Supprimer un nœud
+  const handleDeleteNode = () => {
+    if (!selectedNodeId) return;
+    
+    const deleteNodeRecursive = (nodes: XmlNode[]): XmlNode[] => {
+      return nodes
+        .filter(node => node.id !== selectedNodeId)
+        .map(node => {
+          if (node.children) {
+            return {
+              ...node,
+              children: deleteNodeRecursive(node.children)
+            };
+          }
+          return node;
+        });
+    };
+    
+    setNodes(deleteNodeRecursive(nodes));
+    setSelectedNodeId(null);
+  };
+
   return (
     <div className="h-screen flex">
       {/* Partie gauche - Éditeur */}
@@ -182,9 +238,9 @@ const HomePage: React.FC = () => {
           <div className="space-y-2 text-muted-foreground">
             <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">C</kbd> pour créer une balise</p>
             <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">V</kbd> pour insérer du contenu seul</p>
-            <p className="mt-4 text-sm">
-              Sélectionnez un élément dans l'éditeur pour définir où insérer
-            </p>
+            <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">E</kbd> pour éditer</p>
+            <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">↑/↓</kbd> pour naviguer</p>
+            <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">Suppr</kbd> pour supprimer</p>
           </div>
         </div>
       </div>
@@ -199,6 +255,13 @@ const HomePage: React.FC = () => {
         open={isContentDialogOpen}
         onOpenChange={handleContentDialogClose}
         onInsertContent={handleInsertContent}
+      />
+      
+      <EditDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        node={getSelectedNode()}
+        onSave={handleUpdateNode}
       />
     </div>
   );

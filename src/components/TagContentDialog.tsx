@@ -28,7 +28,7 @@ export function TagContentDialog({ open, onOpenChange, onInsertContent }: TagCon
     if (content.trim()) {
       onInsertContent(content.trim());
       setContent('');
-      onOpenChange(false);
+      // Ne pas fermer ici, laisser le parent gérer
     }
   };
 
@@ -42,7 +42,7 @@ export function TagContentDialog({ open, onOpenChange, onInsertContent }: TagCon
       if (content.trim()) {
         onInsertContent(content.trim());
         setContent('');
-        onOpenChange(false);
+        // Ne pas fermer ici, laisser le parent gérer
       }
     }
   };

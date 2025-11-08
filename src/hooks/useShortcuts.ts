@@ -6,13 +6,17 @@ interface UseShortcutsOptions {
   onOpenContentDialog: () => void;
   onNavigateUp: () => void;
   onNavigateDown: () => void;
+  onDelete: () => void;
+  onEdit: () => void;
 }
 
 export function useShortcuts({ 
   onOpenTagDialog, 
   onOpenContentDialog, 
   onNavigateUp, 
-  onNavigateDown 
+  onNavigateDown,
+  onDelete,
+  onEdit
 }: UseShortcutsOptions) {
   useEffect(() => {
     // Appuyer sur c pour ouvrir la popup d'insertion de balise
@@ -27,6 +31,12 @@ export function useShortcuts({
       onOpenContentDialog();
     });
 
+    // Appuyer sur e pour éditer l'élément sélectionné
+    hotkeys('e', (event) => {
+      event.preventDefault();
+      onEdit();
+    });
+
     // Flèche haut pour naviguer vers le haut
     hotkeys('up', (event) => {
       event.preventDefault();
@@ -39,12 +49,20 @@ export function useShortcuts({
       onNavigateDown();
     });
 
+    // Suppr/Delete pour supprimer l'élément sélectionné
+    hotkeys('del, delete', (event) => {
+      event.preventDefault();
+      onDelete();
+    });
+
     // Cleanup
     return () => {
       hotkeys.unbind('c');
       hotkeys.unbind('v');
+      hotkeys.unbind('e');
       hotkeys.unbind('up');
       hotkeys.unbind('down');
+      hotkeys.unbind('del, delete');
     };
-  }, [onOpenTagDialog, onOpenContentDialog, onNavigateUp, onNavigateDown]);
+  }, [onOpenTagDialog, onOpenContentDialog, onNavigateUp, onNavigateDown, onDelete, onEdit]);
 }
