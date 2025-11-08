@@ -4,9 +4,16 @@ import hotkeys from 'hotkeys-js';
 interface UseShortcutsOptions {
   onOpenTagDialog: () => void;
   onOpenContentDialog: () => void;
+  onNavigateUp: () => void;
+  onNavigateDown: () => void;
 }
 
-export function useShortcuts({ onOpenTagDialog, onOpenContentDialog }: UseShortcutsOptions) {
+export function useShortcuts({ 
+  onOpenTagDialog, 
+  onOpenContentDialog, 
+  onNavigateUp, 
+  onNavigateDown 
+}: UseShortcutsOptions) {
   useEffect(() => {
     // Appuyer sur c pour ouvrir la popup d'insertion de balise
     hotkeys('c', (event) => {
@@ -20,10 +27,24 @@ export function useShortcuts({ onOpenTagDialog, onOpenContentDialog }: UseShortc
       onOpenContentDialog();
     });
 
+    // Flèche haut pour naviguer vers le haut
+    hotkeys('up', (event) => {
+      event.preventDefault();
+      onNavigateUp();
+    });
+
+    // Flèche bas pour naviguer vers le bas
+    hotkeys('down', (event) => {
+      event.preventDefault();
+      onNavigateDown();
+    });
+
     // Cleanup
     return () => {
       hotkeys.unbind('c');
       hotkeys.unbind('v');
+      hotkeys.unbind('up');
+      hotkeys.unbind('down');
     };
-  }, [onOpenTagDialog, onOpenContentDialog]);
+  }, [onOpenTagDialog, onOpenContentDialog, onNavigateUp, onNavigateDown]);
 }
