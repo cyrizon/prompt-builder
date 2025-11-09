@@ -27,67 +27,66 @@ export function useShortcuts({
   onOpenHelp
 }: UseShortcutsOptions) {
   useEffect(() => {
-    // Appuyer sur c pour ouvrir la popup d'insertion de balise
+    // Create a new tag
     hotkeys('c', (event) => {
       event.preventDefault();
       onOpenTagDialog();
     });
 
-    // Appuyer sur e pour éditer l'élément sélectionné
+    // Edit selected element
     hotkeys('e', (event) => {
       event.preventDefault();
       onEdit();
     });
 
-    // Flèche haut pour naviguer vers le haut
+    // Navigate up
     hotkeys('up', (event) => {
       event.preventDefault();
       onNavigateUp();
     });
 
-    // Flèche bas pour naviguer vers le bas
+    // Navigate down
     hotkeys('down', (event) => {
       event.preventDefault();
       onNavigateDown();
     });
 
-    // Alt+Flèche haut pour déplacer l'élément vers le haut
+    // Move element up
     hotkeys('alt+up', (event) => {
       event.preventDefault();
       onMoveUp();
     });
 
-    // Alt+Flèche bas pour déplacer l'élément vers le bas
+    // Move element down
     hotkeys('alt+down', (event) => {
       event.preventDefault();
       onMoveDown();
     });
 
-    // Tab pour indenter (augmenter le niveau)
+    // Indent element
     hotkeys('tab', (event) => {
       event.preventDefault();
       onIndent();
     });
 
-    // Shift+Tab pour désindenter (diminuer le niveau)
+    // Unindent element
     hotkeys('shift+tab', (event) => {
       event.preventDefault();
       onUnindent();
     });
 
-    // Suppr/Delete pour supprimer l'élément sélectionné
+    // Delete selected element
     hotkeys('del, delete', (event) => {
       event.preventDefault();
       onDelete();
     });
 
-    // H pour ouvrir l'aide
+    // Open help dialog
     hotkeys('h', (event) => {
       event.preventDefault();
       onOpenHelp();
     });
 
-    // Cleanup
     return () => {
       hotkeys.unbind('c');
       hotkeys.unbind('e');

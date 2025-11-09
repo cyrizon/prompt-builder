@@ -122,6 +122,11 @@ const HomePage: React.FC = () => {
       const previousSibling = siblings[index - 1];
       if (previousSibling.type !== 'tag') return;
 
+      if (previousSibling.content && previousSibling.content.trim() !== '') {
+        showError('Cannot indent into a tag that already contains text');
+        return;
+      }
+
       const nodeToMove = siblings[index];
       
       if (!parent) {

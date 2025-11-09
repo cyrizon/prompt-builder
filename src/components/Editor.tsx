@@ -39,7 +39,6 @@ export function Editor({ nodes, selectedNodeId, onSelectNode }: EditorProps) {
       );
     }
 
-    // Type 'tag'
     return (
       <div key={node.id}>
         <div

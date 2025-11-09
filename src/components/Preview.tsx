@@ -82,9 +82,7 @@ export const Preview: React.FC<PreviewProps> = ({ nodes }) => {
   };
 
   const handleSendToAI = async (aiUrl: string) => {
-    // Copy XML
     await navigator.clipboard.writeText(formattedXml);
-    // Open link in a new tab
     window.open(aiUrl, '_blank');
     setIsAiDialogOpen(false);
   };

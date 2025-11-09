@@ -114,7 +114,7 @@ export function EditDialog({ open, onOpenChange, node, onSave }: EditDialogProps
         </DialogContent>
       </Dialog>
     );
-}  // Type 'content'
+}
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
