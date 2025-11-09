@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Interactive XML Prompt Builder
 
-## Getting Started
+A visual tool for creating structured XML prompts for AI language models. Build complex, well-formatted prompts with an intuitive tree-based interface and keyboard shortcuts.
 
-First, run the development server:
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Next.js](https://img.shields.io/badge/Next.js-15.5.5-black)
+![React](https://img.shields.io/badge/React-19.1.0-61dafb)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Features
+
+- **Interactive Tree Editor** - Visual XML structure builder with hierarchical tag management
+- **Keyboard Shortcuts** - Efficient navigation and editing with hotkeys
+- **Live Preview** - Real-time formatted XML output with syntax highlighting
+- **One-Click Export** - Copy to clipboard or send directly to AI platforms (ChatGPT, Claude, Gemini, etc.)
+- **Smart Indentation** - Context-aware node movement and nesting
+- **Error Prevention** - Built-in validation to prevent invalid XML structures
+
+## 🏗️ Architecture
+
+### Tech Stack
+
+- **Framework**: Next.js 15.5.5 (Pages Router) with Turbopack
+- **UI Library**: React 19.1.0 with TypeScript
+- **Styling**: Tailwind CSS v4 + shadcn/ui components
+- **XML Formatting**: xml-formatter
+- **Keyboard Handling**: hotkeys-js
+- **Component Library**: Radix UI primitives
+
+### Project Structure
+
+```
+src/
+├── components/
+│   ├── Editor.tsx           # Tree-based XML structure editor
+│   ├── Preview.tsx          # Formatted XML preview with copy/export
+│   ├── TagInputDialog.tsx   # Tag name input modal
+│   ├── TagContentDialog.tsx # Tag content input modal
+│   ├── EditDialog.tsx       # Node editing modal
+│   ├── HelpDialog.tsx       # Keyboard shortcuts help
+│   └── ui/                  # shadcn/ui components
+├── hooks/
+│   └── useShortcuts.ts      # Keyboard shortcut manager
+├── utils/
+│   └── xmlFormatter.ts      # XML formatting logic
+└── pages/
+    └── index.tsx            # Main application page
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Core Data Model
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```typescript
+interface XmlNode {
+  id: string;
+  type: "tag" | "content";
+  tagName?: string;
+  content?: string;
+  children?: XmlNode[];
+}
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Getting Started
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+- Node.js 20+
+- npm, yarn, pnpm, or bun
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Clone the repository
+git clone https://github.com/cyrizon/prompt-builder.git
+cd prompt-builder
 
-## Deploy on Vercel
+# Install dependencies
+npm install
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Run development server
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) to use the app.
+
+### Build for Production
+
+```bash
+npm run build
+npm start
+```
+
+## ⌨️ Keyboard Shortcuts
+
+| Key               | Action                                    |
+| ----------------- | ----------------------------------------- |
+| `C`               | Create new tag                            |
+| `E`               | Edit selected node                        |
+| `Del`             | Delete selected node                      |
+| `↑` / `↓`         | Navigate up/down                          |
+| `Alt+↑` / `Alt+↓` | Move node up/down                         |
+| `Tab`             | Indent node (nest under previous sibling) |
+| `Shift+Tab`       | Unindent node (move up one level)         |
+| `H`               | Show help                                 |
+
+## 🎯 Usage Example
+
+1. **Create a root tag** - Press `C` to create a tag (default: `<prompt>`)
+2. **Add nested tags** - Navigate and press `C` to add child tags like `<context>`, `<instructions>`
+3. **Add content** - When creating tags, optionally add text content
+4. **Organize structure** - Use `Tab`/`Shift+Tab` to nest/unnest, `Alt+↑/↓` to reorder
+5. **Export** - Copy the formatted XML or send directly to your AI platform
+
+## 🤝 Contributing
+
+This is an open-source project - feel free to fork, modify, and create your own version!
+
+### Development
+
+```bash
+# Run linter
+npm run lint
+
+# Format code
+npm run format
+```
+
+## 📝 License
+
+MIT License - Feel free to use this project for any purpose.
+
+## 🙏 Credits
+
+Created by [Cyrizon](https://github.com/cyrizon)
+
+Built with:
+
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Radix UI](https://www.radix-ui.com/)

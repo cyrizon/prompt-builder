@@ -388,7 +388,7 @@ const HomePage: React.FC = () => {
     <div className="h-screen flex flex-col">
       {/* Header */}
       <header className="border-b bg-background px-6 py-4">
-        <h1 className="text-2xl font-bold">Prompt Builder</h1>
+        <h1 className="text-2xl font-bold">Interactive XML Prompt Builder</h1>
       </header>
 
       {/* Main layout: Editor + Preview */}
