@@ -3,11 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint",
-    "deploy": "npm run build && gh-pages -d out"
+    "dev": "next dev",
+    "build": "next build",
+    "deploy": "npm run build && gh-pages -d build"
   },
   "dependencies": {
     "@codemirror/lang-xml": "^6.1.0",
