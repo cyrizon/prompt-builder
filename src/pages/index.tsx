@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { TagInputDialog } from '@/components/TagInputDialog';
 import { TagContentDialog } from '@/components/TagContentDialog';
 import { EditDialog } from '@/components/EditDialog';
+import { HelpDialog } from '@/components/HelpDialog';
 import { Editor, type XmlNode } from '@/components/Editor';
+import { Preview } from '@/components/Preview';
 import { useShortcuts } from '@/hooks/useShortcuts';
 
 const HomePage: React.FC = () => {
   const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
   const [isContentDialogOpen, setIsContentDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const [currentTagName, setCurrentTagName] = useState<string>('');
   
   // Initialiser avec une balise <prompt> de base
@@ -259,6 +262,7 @@ const HomePage: React.FC = () => {
     onMoveDown: () => moveNode('down'),
     onIndent: () => changeIndentation('indent'),
     onUnindent: () => changeIndentation('unindent'),
+    onOpenHelp: () => setIsHelpDialogOpen(true),
   });
 
   // Générer un ID unique
@@ -416,30 +420,28 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex">
-      {/* Partie gauche - Éditeur */}
-      <div className="w-1/2 p-4">
-        <Editor 
-          nodes={nodes}
-          selectedNodeId={selectedNodeId}
-          onSelectNode={setSelectedNodeId}
-        />
+    <div className="h-screen flex flex-col">
+      {/* Layout principal : Éditeur + Preview */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Partie gauche - Éditeur */}
+        <div className="w-1/2 p-4 border-r overflow-auto">
+          <h2 className="text-xl font-semibold mb-4">Structure XML</h2>
+          <Editor 
+            nodes={nodes}
+            selectedNodeId={selectedNodeId}
+            onSelectNode={setSelectedNodeId}
+          />
+        </div>
+
+        {/* Partie droite - Preview */}
+        <div className="w-1/2 p-4 overflow-hidden">
+          <Preview nodes={nodes} />
+        </div>
       </div>
 
-      {/* Partie droite - Preview ou aide */}
-      <div className="w-1/2 p-4 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4">Prompt Builder</h1>
-          <div className="space-y-2 text-muted-foreground">
-            <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">C</kbd> pour créer une balise</p>
-            <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">V</kbd> pour insérer du contenu seul</p>
-            <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">E</kbd> pour éditer</p>
-            <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">↑/↓</kbd> pour naviguer</p>
-            <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">Suppr</kbd> pour supprimer</p>
-            <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">Alt+↑/↓</kbd> pour déplacer</p>
-            <p>Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">Tab/Shift+Tab</kbd> pour indenter</p>
-          </div>
-        </div>
+      {/* Hint en bas */}
+      <div className="border-t bg-muted/30 px-4 py-2 text-center text-sm text-muted-foreground">
+        Appuyez sur <kbd className="px-2 py-1 bg-accent rounded text-xs mx-1">H</kbd> pour afficher l'aide
       </div>
       
       <TagInputDialog
@@ -459,6 +461,11 @@ const HomePage: React.FC = () => {
         onOpenChange={setIsEditDialogOpen}
         node={getSelectedNode()}
         onSave={handleUpdateNode}
+      />
+
+      <HelpDialog
+        open={isHelpDialogOpen}
+        onOpenChange={setIsHelpDialogOpen}
       />
     </div>
   );

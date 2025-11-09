@@ -12,6 +12,7 @@ interface UseShortcutsOptions {
   onMoveDown: () => void;
   onIndent: () => void;
   onUnindent: () => void;
+  onOpenHelp: () => void;
 }
 
 export function useShortcuts({ 
@@ -24,7 +25,8 @@ export function useShortcuts({
   onMoveUp,
   onMoveDown,
   onIndent,
-  onUnindent
+  onUnindent,
+  onOpenHelp
 }: UseShortcutsOptions) {
   useEffect(() => {
     // Appuyer sur c pour ouvrir la popup d'insertion de balise
@@ -87,6 +89,12 @@ export function useShortcuts({
       onDelete();
     });
 
+    // H pour ouvrir l'aide
+    hotkeys('h', (event) => {
+      event.preventDefault();
+      onOpenHelp();
+    });
+
     // Cleanup
     return () => {
       hotkeys.unbind('c');
@@ -99,6 +107,7 @@ export function useShortcuts({
       hotkeys.unbind('tab');
       hotkeys.unbind('shift+tab');
       hotkeys.unbind('del, delete');
+      hotkeys.unbind('h');
     };
-  }, [onOpenTagDialog, onOpenContentDialog, onNavigateUp, onNavigateDown, onDelete, onEdit, onMoveUp, onMoveDown, onIndent, onUnindent]);
+  }, [onOpenTagDialog, onOpenContentDialog, onNavigateUp, onNavigateDown, onDelete, onEdit, onMoveUp, onMoveDown, onIndent, onUnindent, onOpenHelp]);
 }
