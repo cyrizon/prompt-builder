@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "deploy": "npm run build && gh-pages -d build"
+    "deploy": "rm -rf docs && mkdir docs && cp -r build/* docs"
   },
   "dependencies": {
     "@codemirror/lang-xml": "^6.1.0",
