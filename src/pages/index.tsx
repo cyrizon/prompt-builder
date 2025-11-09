@@ -15,7 +15,6 @@ const HomePage: React.FC = () => {
   const [currentTagName, setCurrentTagName] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   
-  // Initialiser avec une balise <prompt> de base
   const [nodes, setNodes] = useState<XmlNode[]>([{
     id: 'root-prompt',
     type: 'tag',
@@ -25,13 +24,11 @@ const HomePage: React.FC = () => {
   
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>('root-prompt');
 
-  // Afficher une erreur temporaire
   const showError = (message: string) => {
     setErrorMessage(message);
     setTimeout(() => setErrorMessage(''), 3000);
   };
 
-  // Créer une liste plate de tous les nœuds pour la navigation
   const flattenNodes = (nodes: XmlNode[]): XmlNode[] => {
     const result: XmlNode[] = [];
     const traverse = (nodeList: XmlNode[]) => {
@@ -46,7 +43,6 @@ const HomePage: React.FC = () => {
     return result;
   };
 
-  // Navigation avec les flèches
   const navigateNodes = (direction: 'up' | 'down') => {
     const flatNodes = flattenNodes(nodes);
     if (flatNodes.length === 0) return;
@@ -62,21 +58,17 @@ const HomePage: React.FC = () => {
     }
   };
 
-  // Déplacer un élément vers le haut ou le bas dans sa liste
   const moveNode = (direction: 'up' | 'down') => {
     if (!selectedNodeId) return;
 
     const moveInArray = (nodes: XmlNode[], parentPath: XmlNode[] = []): XmlNode[] => {
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].id === selectedNodeId) {
-          // Trouvé l'élément à déplacer
           if (direction === 'up' && i > 0) {
-            // Échanger avec l'élément précédent
             const newNodes = [...nodes];
             [newNodes[i - 1], newNodes[i]] = [newNodes[i], newNodes[i - 1]];
             return newNodes;
           } else if (direction === 'down' && i < nodes.length - 1) {
-            // Échanger avec l'élément suivant
             const newNodes = [...nodes];
             [newNodes[i], newNodes[i + 1]] = [newNodes[i + 1], newNodes[i]];
             return newNodes;
@@ -84,7 +76,6 @@ const HomePage: React.FC = () => {
           return nodes;
         }
         
-        // Chercher dans les enfants
         if (nodes[i].children && nodes[i].children!.length > 0) {
           const newChildren = moveInArray(nodes[i].children!, [...parentPath, nodes[i]]);
           if (newChildren !== nodes[i].children) {
@@ -100,11 +91,9 @@ const HomePage: React.FC = () => {
     setNodes(moveInArray(nodes));
   };
 
-  // Changer le niveau d'indentation (Tab/Shift+Tab)
   const changeIndentation = (direction: 'indent' | 'unindent') => {
     if (!selectedNodeId) return;
 
-    // Fonction pour trouver le parent et l'index de l'élément
     const findNodeContext = (
       nodes: XmlNode[], 
       targetId: string, 
@@ -128,20 +117,16 @@ const HomePage: React.FC = () => {
     const { parent, index, siblings } = context;
 
     if (direction === 'indent') {
-      // Devenir enfant de l'élément précédent
-      if (index === 0) return; // Pas d'élément précédent
+      if (index === 0) return;
       
       const previousSibling = siblings[index - 1];
-      if (previousSibling.type !== 'tag') return; // Peut seulement devenir enfant d'une balise
+      if (previousSibling.type !== 'tag') return;
 
       const nodeToMove = siblings[index];
       
-      // Si on est au niveau racine, gérer directement
       if (!parent) {
         const newNodes = [...nodes];
-        // Retirer l'élément de sa position actuelle
         newNodes.splice(index, 1);
-        // Ajouter aux enfants de l'élément précédent
         const prevIndex = newNodes.findIndex(n => n.id === previousSibling.id);
         newNodes[prevIndex] = {
           ...newNodes[prevIndex],
@@ -151,27 +136,22 @@ const HomePage: React.FC = () => {
         return;
       }
       
-      // Fonction récursive pour mettre à jour l'arbre
       const updateNodes = (nodes: XmlNode[]): XmlNode[] => {
         return nodes.map(node => {
-          // Si c'est l'élément précédent, ajouter le noeud dans ses enfants
           if (node.id === previousSibling.id) {
             return {
               ...node,
               children: [...(node.children || []), nodeToMove]
             };
           }
-          // Si ce noeud contient l'élément à déplacer dans ses enfants
           if (node.children) {
             const hasChild = node.children.some(child => child.id === selectedNodeId);
             if (hasChild) {
-              // Retirer l'élément de cette liste
               return {
                 ...node,
                 children: node.children.filter(child => child.id !== selectedNodeId).map(child => updateNodes([child])[0])
               };
             }
-            // Sinon continuer la recherche récursivement
             return {
               ...node,
               children: updateNodes(node.children)
@@ -184,45 +164,37 @@ const HomePage: React.FC = () => {
       setNodes(updateNodes(nodes));
       
     } else {
-      // Désindenter : remonter au niveau du parent
-      if (!parent) return; // Déjà au niveau racine
+      if (!parent) return;
 
       const nodeToMove = siblings[index];
       
-      // Trouver le contexte du parent (grand-parent, position du parent)
       const parentContext = findNodeContext(nodes, parent.id);
       if (!parentContext) return;
 
       const { parent: grandParent, index: parentIndex, siblings: parentSiblings } = parentContext;
       
-      // Bloquer la désindentation si le parent est au niveau racine (empêcher plusieurs racines)
       if (!grandParent) {
-        showError('Impossible de créer plusieurs balises racines');
+        showError('Cannot create multiple root tags');
         return;
       }
       
-      // Fonction récursive pour mettre à jour l'arbre
       const updateNodes = (nodes: XmlNode[]): XmlNode[] => {
         return nodes.map(node => {
-          // Si c'est le parent, retirer l'élément de ses enfants
           if (node.id === parent.id) {
             return {
               ...node,
               children: node.children!.filter(child => child.id !== selectedNodeId)
             };
           }
-          // Si ce noeud contient le parent dans ses enfants
           if (node.children) {
             const hasParent = node.children.some(child => child.id === parent.id);
             if (hasParent) {
-              // Trouver la position du parent et insérer le noeud juste après
               const newChildren = [...node.children];
               const parentIdx = newChildren.findIndex(child => child.id === parent.id);
               newChildren.splice(parentIdx + 1, 0, nodeToMove);
               return {
                 ...node,
                 children: newChildren.map(child => {
-                  // Retirer le noeud des enfants du parent
                   if (child.id === parent.id) {
                     return {
                       ...child,
@@ -233,7 +205,6 @@ const HomePage: React.FC = () => {
                 })
               };
             }
-            // Sinon continuer la recherche récursivement
             return {
               ...node,
               children: updateNodes(node.children)
@@ -247,14 +218,12 @@ const HomePage: React.FC = () => {
     }
   };
 
-  // Gestion des raccourcis clavier
   useShortcuts({
     onOpenTagDialog: () => {
-      // Vérifier si la balise sélectionnée a déjà du contenu texte
       if (selectedNodeId) {
         const selectedNode = getSelectedNode();
         if (selectedNode?.content && selectedNode.content.trim() !== '') {
-          showError('Cette balise contient déjà du texte');
+          showError('This tag already contains text');
           return;
         }
       }
@@ -275,10 +244,8 @@ const HomePage: React.FC = () => {
     onOpenHelp: () => setIsHelpDialogOpen(true),
   });
 
-  // Générer un ID unique
   const generateId = () => `node-${Date.now()}-${Math.random()}`;
 
-  // Trouver un nœud par son ID de manière récursive
   const findNodeById = (nodes: XmlNode[], id: string): XmlNode | null => {
     for (const node of nodes) {
       if (node.id === id) return node;
@@ -290,29 +257,21 @@ const HomePage: React.FC = () => {
     return null;
   };
 
-  // Insérer un nouveau nœud
   const insertNode = (newNode: XmlNode) => {
     if (selectedNodeId === null) {
-      // Insérer à la racine
       setNodes([...nodes, newNode]);
     } else {
-      // Vérifier si le nœud sélectionné est de type 'content'
       const flatNodes = flattenNodes(nodes);
       const selectedNode = flatNodes.find(n => n.id === selectedNodeId);
       
       if (selectedNode?.type === 'content') {
-        // On ne peut pas ajouter d'enfants à un nœud de contenu
-        console.warn('Impossible d\'ajouter un enfant à un nœud de contenu');
+        console.warn('Cannot add a child to a content node');
         return;
       }
       
-      // Note: La vérification du contenu texte est faite avant l'ouverture du dialog
-      
-      // Insérer comme enfant du nœud sélectionné
       const updateNodes = (nodes: XmlNode[]): XmlNode[] => {
         return nodes.map(node => {
           if (node.id === selectedNodeId) {
-            // Ajouter le nouveau nœud comme enfant
             return {
               ...node,
               children: [...(node.children || []), newNode]
@@ -332,14 +291,12 @@ const HomePage: React.FC = () => {
   };
 
   const handleInsertTag = (tagName: string) => {
-    // Sauvegarder le nom de la balise et ouvrir la popup de contenu
     setCurrentTagName(tagName);
     setIsTagDialogOpen(false);
     setIsContentDialogOpen(true);
   };
 
   const handleInsertContent = (content: string) => {
-    // Créer la balise avec le contenu (depuis C)
     const newTag: XmlNode = {
       id: generateId(),
       type: 'tag',
@@ -354,8 +311,6 @@ const HomePage: React.FC = () => {
 
   const handleContentDialogClose = (open: boolean) => {
     if (!open) {
-      // Si on ferme la popup de contenu (Escape ou clic dehors)
-      // On insère quand même la balise vide
       if (currentTagName) {
         const newTag: XmlNode = {
           id: generateId(),
@@ -370,22 +325,19 @@ const HomePage: React.FC = () => {
     setIsContentDialogOpen(open);
   };
 
-  // Trouver le nœud sélectionné
   const getSelectedNode = (): XmlNode | null => {
     if (!selectedNodeId) return null;
     const flatNodes = flattenNodes(nodes);
     return flatNodes.find(n => n.id === selectedNodeId) || null;
   };
 
-  // Mettre à jour un nœud
   const handleUpdateNode = (updatedNode: XmlNode) => {
-    // Bloquer l'ajout de contenu texte si la balise a déjà des enfants
     if (updatedNode.type === 'tag' && 
         updatedNode.content && 
         updatedNode.content.trim() !== '' &&
         updatedNode.children && 
         updatedNode.children.length > 0) {
-      showError('Cette balise contient déjà des balises enfants');
+      showError('This tag already contains child tags');
       return;
     }
     
@@ -406,7 +358,6 @@ const HomePage: React.FC = () => {
     setNodes(updateNodesRecursive(nodes));
   };
 
-  // Supprimer un nœud
   const handleDeleteNode = () => {
     if (!selectedNodeId) return;
     
@@ -435,11 +386,11 @@ const HomePage: React.FC = () => {
         <h1 className="text-2xl font-bold">Prompt Builder</h1>
       </header>
 
-      {/* Layout principal : Éditeur + Preview */}
+      {/* Main layout: Editor + Preview */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Partie gauche - Éditeur */}
+        {/* Left side - Editor */}
         <div className="w-1/2 p-4 border-r overflow-auto">
-          <h2 className="text-xl font-semibold mb-4">Structure XML</h2>
+          <h2 className="text-xl font-semibold mb-4">XML Structure</h2>
           <Editor 
             nodes={nodes}
             selectedNodeId={selectedNodeId}
@@ -447,7 +398,7 @@ const HomePage: React.FC = () => {
           />
         </div>
 
-        {/* Partie droite - Preview */}
+        {/* Right side - Preview */}
         <div className="w-1/2 p-4 overflow-hidden">
           <Preview nodes={nodes} />
         </div>
@@ -456,13 +407,13 @@ const HomePage: React.FC = () => {
       {/* Footer */}
       <footer className="border-t bg-background px-6 py-3 flex items-center justify-center text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
-          Créé par Cyrizon
+          Created by Cyrizon
           <a 
             href="https://github.com/cyrizon" 
             target="_blank" 
             rel="noopener noreferrer"
             className="text-foreground hover:text-primary transition-colors"
-            title="Voir mon GitHub"
+            title="View my GitHub"
           >
             <svg 
               className="w-5 h-5" 
@@ -476,12 +427,12 @@ const HomePage: React.FC = () => {
         </div>
       </footer>
 
-      {/* Popup aide flottante */}
+      {/* Floating help popup */}
       <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-muted/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg text-sm text-muted-foreground">
-        Appuyez sur <kbd className="px-2 py-1 bg-accent rounded text-xs mx-1">H</kbd> pour afficher l'aide
+        Press <kbd className="px-2 py-1 bg-accent rounded text-xs mx-1">H</kbd> to show help
       </div>
 
-      {/* Toast d'erreur */}
+      {/* Error toast */}
       {errorMessage && (
         <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg animate-in fade-in slide-in-from-bottom-5 duration-300">
           {errorMessage}

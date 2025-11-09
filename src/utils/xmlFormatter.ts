@@ -1,9 +1,6 @@
 import format from 'xml-formatter';
 import { type XmlNode } from '@/components/Editor';
 
-/**
- * Convertit l'arbre de noeuds XML en une chaîne XML formatée
- */
 export const formatXml = (nodes: XmlNode[]): string => {
   const buildXmlString = (nodes: XmlNode[]): string => {
     return nodes.map(node => {
@@ -17,18 +14,15 @@ export const formatXml = (nodes: XmlNode[]): string => {
         const hasContent = node.content && node.content.trim() !== '';
         
         if (!hasChildren && !hasContent) {
-          // Balise auto-fermante
           return `<${tagName} />`;
         }
         
         let content = '';
         
-        // Ajouter le contenu direct de la balise
         if (hasContent) {
           content += node.content;
         }
         
-        // Ajouter les enfants
         if (hasChildren) {
           content += buildXmlString(node.children!);
         }

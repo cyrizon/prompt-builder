@@ -82,9 +82,9 @@ export const Preview: React.FC<PreviewProps> = ({ nodes }) => {
   };
 
   const handleSendToAI = async (aiUrl: string) => {
-    // Copier le XML
+    // Copy XML
     await navigator.clipboard.writeText(formattedXml);
-    // Ouvrir le lien dans un nouvel onglet
+    // Open link in a new tab
     window.open(aiUrl, '_blank');
     setIsAiDialogOpen(false);
   };
@@ -92,21 +92,21 @@ export const Preview: React.FC<PreviewProps> = ({ nodes }) => {
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Preview XML</h2>
+        <h2 className="text-xl font-semibold">XML Preview</h2>
         <div className="flex gap-2">
           <Button 
             onClick={handleCopy}
             variant="outline"
             size="sm"
           >
-            {copied ? '✓ Copié' : 'Copier'}
+            {copied ? '✓ Copied' : 'Copy'}
           </Button>
           <Button 
             onClick={() => setIsAiDialogOpen(true)}
             variant="outline"
             size="sm"
           >
-            Envoyer à une IA
+            Send to AI
           </Button>
         </div>
       </div>
@@ -117,11 +117,11 @@ export const Preview: React.FC<PreviewProps> = ({ nodes }) => {
         </pre>
       </Card>
 
-      {/* Dialog de sélection d'IA */}
+      {/* AI selection dialog */}
       <Dialog open={isAiDialogOpen} onOpenChange={setIsAiDialogOpen}>
         <DialogContent className="sm:max-w-md" aria-describedby={undefined}>
           <DialogHeader>
-            <DialogTitle className="text-center">Choisir une IA</DialogTitle>
+            <DialogTitle className="text-center">Choose an AI</DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-3 gap-4 py-4">
             {AI_SERVICES.map((ai) => (
@@ -138,7 +138,7 @@ export const Preview: React.FC<PreviewProps> = ({ nodes }) => {
             ))}
           </div>
           <p className="text-xs text-center text-muted-foreground">
-            Le prompt sera copié dans votre presse-papier
+            The prompt will be copied to your clipboard
           </p>
         </DialogContent>
       </Dialog>

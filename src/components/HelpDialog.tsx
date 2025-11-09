@@ -16,16 +16,16 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange }) =>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto" hideCloseButton>
         <DialogHeader>
-          <DialogTitle className="text-center">Raccourcis clavier</DialogTitle>
+          <DialogTitle className="text-center">Keyboard Shortcuts</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6 py-4">
-          {/* Création */}
+          {/* Creation */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">Création</h3>
+            <h3 className="text-lg font-semibold mb-3">Creation</h3>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span>Créer une nouvelle balise</span>
+                <span>Create a new tag</span>
                 <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">C</kbd>
               </div>
             </div>
@@ -36,41 +36,41 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange }) =>
             <h3 className="text-lg font-semibold mb-3">Navigation</h3>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span>Naviguer vers le haut</span>
+                <span>Navigate up</span>
                 <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">↑</kbd>
               </div>
               <div className="flex items-center justify-between">
-                <span>Naviguer vers le bas</span>
+                <span>Navigate down</span>
                 <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">↓</kbd>
               </div>
             </div>
           </div>
 
-          {/* Édition */}
+          {/* Editing */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">Édition</h3>
+            <h3 className="text-lg font-semibold mb-3">Editing</h3>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span>Éditer l'élément sélectionné</span>
+                <span>Edit selected element</span>
                 <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">E</kbd>
               </div>
               <div className="flex items-center justify-between">
-                <span>Supprimer l'élément sélectionné</span>
-                <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">Suppr</kbd>
+                <span>Delete selected element</span>
+                <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">Del</kbd>
               </div>
             </div>
           </div>
 
-          {/* Déplacement */}
+          {/* Move */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">Déplacement</h3>
+            <h3 className="text-lg font-semibold mb-3">Move</h3>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span>Déplacer vers le haut</span>
+                <span>Move up</span>
                 <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">Alt + ↑</kbd>
               </div>
               <div className="flex items-center justify-between">
-                <span>Déplacer vers le bas</span>
+                <span>Move down</span>
                 <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">Alt + ↓</kbd>
               </div>
             </div>
@@ -81,27 +81,27 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange }) =>
             <h3 className="text-lg font-semibold mb-3">Indentation</h3>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span>Indenter (devenir enfant de l'élément précédent)</span>
+                <span>Indent (become child of previous element)</span>
                 <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">Tab</kbd>
               </div>
               <div className="flex items-center justify-between">
-                <span>Désindenter (remonter au niveau parent)</span>
+                <span>Unindent (move up to parent level)</span>
                 <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">Shift + Tab</kbd>
               </div>
             </div>
           </div>
 
-          {/* Aide */}
+          {/* Help */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">Aide</h3>
+            <h3 className="text-lg font-semibold mb-3">Help</h3>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span>Afficher cette aide</span>
+                <span>Show this help</span>
                 <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">H</kbd>
               </div>
               <div className="flex items-center justify-between">
-                <span>Fermer les modales</span>
-                <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">Échap</kbd>
+                <span>Close dialogs</span>
+                <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">Esc</kbd>
               </div>
             </div>
           </div>

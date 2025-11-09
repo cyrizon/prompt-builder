@@ -25,14 +25,13 @@ export function EditDialog({ open, onOpenChange, node, onSave }: EditDialogProps
     if (open && node) {
       if (node.type === 'tag') {
         setTagName(node.tagName || '');
-        setContent(node.content || ''); // Gérer le cas où content est undefined
+        setContent(node.content || '');
         setTimeout(() => inputRef.current?.focus(), 0);
       } else {
         setContent(node.content || '');
         setTimeout(() => textareaRef.current?.focus(), 0);
       }
     } else if (!open) {
-      // Réinitialiser quand on ferme
       setTagName('');
       setContent('');
     }
@@ -78,12 +77,12 @@ export function EditDialog({ open, onOpenChange, node, onSave }: EditDialogProps
           hideCloseButton
           aria-describedby={undefined}
         >
-          <DialogTitle className="sr-only">Éditer la balise</DialogTitle>
+          <DialogTitle className="sr-only">Edit tag</DialogTitle>
           <form onSubmit={handleSubmit} className="space-y-3">
             <Input
               ref={inputRef}
               type="text"
-              placeholder="Nom de la balise..."
+              placeholder="Tag name..."
               value={tagName}
               onChange={(e) => setTagName(e.target.value)}
               onKeyDown={(e) => {
@@ -91,14 +90,14 @@ export function EditDialog({ open, onOpenChange, node, onSave }: EditDialogProps
                   onOpenChange(false);
                 } else if (e.key === 'Enter') {
                   e.preventDefault();
-                  // Passer au champ contenu
+                  textareaRef.current?.focus();
                   textareaRef.current?.focus();
                 }
               }}
             />
             <Textarea
               ref={textareaRef}
-              placeholder="Contenu (optionnel)... (Ctrl+Entrée pour valider)"
+              placeholder="Content (optional)... (Ctrl+Enter to submit)"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               onKeyDown={(e) => {
@@ -123,11 +122,11 @@ export function EditDialog({ open, onOpenChange, node, onSave }: EditDialogProps
         hideCloseButton
         aria-describedby={undefined}
       >
-        <DialogTitle className="sr-only">Éditer le contenu</DialogTitle>
+  <DialogTitle className="sr-only">Edit content</DialogTitle>
         <form onSubmit={handleSubmit}>
           <Textarea
             ref={textareaRef}
-            placeholder="Contenu... (Ctrl+Entrée pour valider)"
+            placeholder="Content... (Ctrl+Enter to submit)"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={(e) => {

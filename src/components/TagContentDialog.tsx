@@ -18,7 +18,6 @@ export function TagContentDialog({ open, onOpenChange, onInsertContent }: TagCon
 
   useEffect(() => {
     if (open) {
-      // Focus le textarea quand la dialog s'ouvre
       setTimeout(() => textareaRef.current?.focus(), 0);
       setContent('');
     }
@@ -29,7 +28,6 @@ export function TagContentDialog({ open, onOpenChange, onInsertContent }: TagCon
     if (content.trim()) {
       onInsertContent(content.trim());
       setContent('');
-      // Ne pas fermer ici, laisser le parent gérer
     }
   };
 
@@ -37,13 +35,12 @@ export function TagContentDialog({ open, onOpenChange, onInsertContent }: TagCon
     if (e.key === 'Escape') {
       onOpenChange(false);
     }
-    // Ctrl/Cmd + Enter pour valider
+    
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
       e.preventDefault();
       if (content.trim()) {
         onInsertContent(content.trim());
         setContent('');
-        // Ne pas fermer ici, laisser le parent gérer
       }
     }
   };
@@ -55,11 +52,11 @@ export function TagContentDialog({ open, onOpenChange, onInsertContent }: TagCon
         hideCloseButton
         aria-describedby={undefined}
       >
-        <DialogTitle className="sr-only">Contenu de la balise</DialogTitle>
+        <DialogTitle className="sr-only">Tag content</DialogTitle>
         <form onSubmit={handleSubmit}>
           <Textarea
             ref={textareaRef}
-            placeholder="Contenu de la balise... (Ctrl+Entrée pour valider)"
+            placeholder="Tag content... (Ctrl+Enter to submit)"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={handleKeyDown}

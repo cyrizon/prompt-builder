@@ -30,10 +30,10 @@ export function Editor({ nodes, selectedNodeId, onSelectNode }: EditorProps) {
             ${isSelected ? 'bg-muted border-l-2 border-muted-foreground' : 'hover:bg-muted/50'}
           `}
           style={{ paddingLeft }}
-          title="Les nœuds de contenu ne peuvent pas avoir d'enfants"
+          title="Content nodes cannot have children"
         >
           <span className="text-muted-foreground italic">
-            {node.content || '(contenu vide)'}
+            {node.content || '(empty content)'}
           </span>
         </div>
       );
@@ -88,8 +88,8 @@ export function Editor({ nodes, selectedNodeId, onSelectNode }: EditorProps) {
       <div className="p-2">
         {nodes.length === 0 ? (
           <div className="text-center text-muted-foreground py-8">
-            <p>Aucun élément</p>
-            <p className="text-sm mt-2">Appuyez sur <kbd className="px-2 py-1 bg-accent rounded">C</kbd> pour créer une balise</p>
+            <p>No elements</p>
+            <p className="text-sm mt-2">Press <kbd className="px-2 py-1 bg-accent rounded">C</kbd> to create a tag</p>
           </div>
         ) : (
           nodes.map(node => renderNode(node, 0))

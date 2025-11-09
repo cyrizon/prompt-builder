@@ -18,7 +18,6 @@ export function TagInputDialog({ open, onOpenChange, onInsertTag }: TagInputDial
 
   useEffect(() => {
     if (open) {
-      // Focus l'input quand la dialog s'ouvre
       setTimeout(() => inputRef.current?.focus(), 0);
       setTagName('');
     }
@@ -46,12 +45,12 @@ export function TagInputDialog({ open, onOpenChange, onInsertTag }: TagInputDial
         hideCloseButton
         aria-describedby={undefined}
       >
-        <DialogTitle className="sr-only">Nom de la balise</DialogTitle>
+  <DialogTitle className="sr-only">Tag name</DialogTitle>
         <form onSubmit={handleSubmit}>
           <Input
             ref={inputRef}
             type="text"
-            placeholder="Nom de la balise..."
+            placeholder="Tag name..."
             value={tagName}
             onChange={(e) => setTagName(e.target.value)}
             onKeyDown={handleKeyDown}
