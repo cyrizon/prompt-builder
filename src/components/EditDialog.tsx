@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -75,7 +76,9 @@ export function EditDialog({ open, onOpenChange, node, onSave }: EditDialogProps
         <DialogContent 
           className="sm:max-w-md p-4 border-0 shadow-2xl bg-background" 
           hideCloseButton
+          aria-describedby={undefined}
         >
+          <DialogTitle className="sr-only">Éditer la balise</DialogTitle>
           <form onSubmit={handleSubmit} className="space-y-3">
             <Input
               ref={inputRef}
@@ -112,15 +115,15 @@ export function EditDialog({ open, onOpenChange, node, onSave }: EditDialogProps
         </DialogContent>
       </Dialog>
     );
-  }
-
-  // Type 'content'
+}  // Type 'content'
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         className="sm:max-w-2xl p-4 border-0 shadow-2xl bg-background" 
         hideCloseButton
+        aria-describedby={undefined}
       >
+        <DialogTitle className="sr-only">Éditer le contenu</DialogTitle>
         <form onSubmit={handleSubmit}>
           <Textarea
             ref={textareaRef}

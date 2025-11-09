@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -52,7 +53,9 @@ export function TagContentDialog({ open, onOpenChange, onInsertContent }: TagCon
       <DialogContent 
         className="sm:max-w-2xl p-4 border-0 shadow-2xl bg-background" 
         hideCloseButton
+        aria-describedby={undefined}
       >
+        <DialogTitle className="sr-only">Contenu de la balise</DialogTitle>
         <form onSubmit={handleSubmit}>
           <Textarea
             ref={textareaRef}

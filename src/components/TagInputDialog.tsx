@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 
@@ -43,7 +44,9 @@ export function TagInputDialog({ open, onOpenChange, onInsertTag }: TagInputDial
       <DialogContent 
         className="sm:max-w-md p-4 border-0 shadow-2xl bg-background" 
         hideCloseButton
+        aria-describedby={undefined}
       >
+        <DialogTitle className="sr-only">Nom de la balise</DialogTitle>
         <form onSubmit={handleSubmit}>
           <Input
             ref={inputRef}
