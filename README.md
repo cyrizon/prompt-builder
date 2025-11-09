@@ -118,7 +118,7 @@ The app will be available at **http://localhost:3001** (or integrated with your 
 If you have an existing Nginx setup (like in the example), add this to your Nginx configuration:
 
 ```nginx
-# Sous-domaine: https://prompt.yourdomain.com
+# Subdomain: https://prompt.yourdomain.com
 server {
     listen 443 ssl;
     server_name prompt.yourdomain.com;
@@ -139,7 +139,7 @@ server {
     }
 }
 
-# Redirection HTTP → HTTPS
+# HTTP to HTTPS redirection
 server {
     listen 80;
     server_name prompt.yourdomain.com;
@@ -147,7 +147,7 @@ server {
 }
 ```
 
-**Alternative: Sous-chemin** (e.g., `https://yourdomain.com/prompt`)
+**Alternative: Subpath** (e.g., `https://yourdomain.com/prompt`)
 
 ```nginx
 # Add to your existing server block
