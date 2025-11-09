@@ -113,16 +113,6 @@ npm start
 
 This is an open-source project - feel free to fork, modify, and create your own version!
 
-### Development
-
-```bash
-# Run linter
-npm run lint
-
-# Format code
-npm run format
-```
-
 ## 📝 License
 
 MIT License - Feel free to use this project for any purpose.
