@@ -13,6 +13,7 @@ const HomePage: React.FC = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const [currentTagName, setCurrentTagName] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
   
   // Initialiser avec une balise <prompt> de base
   const [nodes, setNodes] = useState<XmlNode[]>([{
@@ -23,6 +24,12 @@ const HomePage: React.FC = () => {
   }]);
   
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>('root-prompt');
+
+  // Afficher une erreur temporaire
+  const showError = (message: string) => {
+    setErrorMessage(message);
+    setTimeout(() => setErrorMessage(''), 3000);
+  };
 
   // Créer une liste plate de tous les nœuds pour la navigation
   const flattenNodes = (nodes: XmlNode[]): XmlNode[] => {
@@ -188,6 +195,12 @@ const HomePage: React.FC = () => {
 
       const { parent: grandParent, index: parentIndex, siblings: parentSiblings } = parentContext;
       
+      // Bloquer la désindentation si le parent est au niveau racine (empêcher plusieurs racines)
+      if (!grandParent) {
+        showError('Impossible de créer plusieurs balises racines');
+        return;
+      }
+      
       // Fonction récursive pour mettre à jour l'arbre
       const updateNodes = (nodes: XmlNode[]): XmlNode[] => {
         return nodes.map(node => {
@@ -230,26 +243,23 @@ const HomePage: React.FC = () => {
         });
       };
 
-      // Si le parent est au niveau racine
-      if (!grandParent) {
-        const newNodes = updateNodes(nodes);
-        const parentIdx = newNodes.findIndex(n => n.id === parent.id);
-        if (parentIdx !== -1) {
-          // Insérer le noeud juste après le parent au niveau racine
-          const result = [...newNodes];
-          result.splice(parentIdx + 1, 0, nodeToMove);
-          setNodes(result);
-        }
-      } else {
-        setNodes(updateNodes(nodes));
-      }
+      setNodes(updateNodes(nodes));
     }
   };
 
   // Gestion des raccourcis clavier
   useShortcuts({
-    onOpenTagDialog: () => setIsTagDialogOpen(true),
-    onOpenContentDialog: () => setIsContentDialogOpen(true),
+    onOpenTagDialog: () => {
+      // Vérifier si la balise sélectionnée a déjà du contenu texte
+      if (selectedNodeId) {
+        const selectedNode = getSelectedNode();
+        if (selectedNode?.content && selectedNode.content.trim() !== '') {
+          showError('Cette balise contient déjà du texte');
+          return;
+        }
+      }
+      setIsTagDialogOpen(true);
+    },
     onNavigateUp: () => navigateNodes('up'),
     onNavigateDown: () => navigateNodes('down'),
     onDelete: () => handleDeleteNode(),
@@ -292,10 +302,11 @@ const HomePage: React.FC = () => {
       
       if (selectedNode?.type === 'content') {
         // On ne peut pas ajouter d'enfants à un nœud de contenu
-        // On ne fait rien ou on peut afficher un message
         console.warn('Impossible d\'ajouter un enfant à un nœud de contenu');
         return;
       }
+      
+      // Note: La vérification du contenu texte est faite avant l'ouverture du dialog
       
       // Insérer comme enfant du nœud sélectionné
       const updateNodes = (nodes: XmlNode[]): XmlNode[] => {
@@ -328,28 +339,16 @@ const HomePage: React.FC = () => {
   };
 
   const handleInsertContent = (content: string) => {
-    if (currentTagName) {
-      // Insérer la balise avec le contenu directement
-      const newTag: XmlNode = {
-        id: generateId(),
-        type: 'tag',
-        tagName: currentTagName,
-        content: content.trim() ? content.trim() : undefined, // Ajouter le contenu s'il existe
-        children: []
-      };
-      insertNode(newTag);
-      setCurrentTagName(''); // Réinitialiser AVANT de fermer la dialog
-    } else {
-      // Insérer juste du contenu
-      const newContent: XmlNode = {
-        id: generateId(),
-        type: 'content',
-        content
-      };
-      insertNode(newContent);
-    }
-    
-    // Réinitialiser et fermer
+    // Créer la balise avec le contenu (depuis C)
+    const newTag: XmlNode = {
+      id: generateId(),
+      type: 'tag',
+      tagName: currentTagName,
+      content: content.trim() ? content.trim() : undefined,
+      children: []
+    };
+    insertNode(newTag);
+    setCurrentTagName('');
     setIsContentDialogOpen(false);
   };
 
@@ -380,6 +379,16 @@ const HomePage: React.FC = () => {
 
   // Mettre à jour un nœud
   const handleUpdateNode = (updatedNode: XmlNode) => {
+    // Bloquer l'ajout de contenu texte si la balise a déjà des enfants
+    if (updatedNode.type === 'tag' && 
+        updatedNode.content && 
+        updatedNode.content.trim() !== '' &&
+        updatedNode.children && 
+        updatedNode.children.length > 0) {
+      showError('Cette balise contient déjà des balises enfants');
+      return;
+    }
+    
     const updateNodesRecursive = (nodes: XmlNode[]): XmlNode[] => {
       return nodes.map(node => {
         if (node.id === updatedNode.id) {
@@ -443,6 +452,13 @@ const HomePage: React.FC = () => {
       <div className="border-t bg-muted/30 px-4 py-2 text-center text-sm text-muted-foreground">
         Appuyez sur <kbd className="px-2 py-1 bg-accent rounded text-xs mx-1">H</kbd> pour afficher l'aide
       </div>
+
+      {/* Toast d'erreur */}
+      {errorMessage && (
+        <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg animate-in fade-in slide-in-from-bottom-5 duration-300">
+          {errorMessage}
+        </div>
+      )}
       
       <TagInputDialog
         open={isTagDialogOpen}

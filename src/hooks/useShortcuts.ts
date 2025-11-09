@@ -3,7 +3,6 @@ import hotkeys from 'hotkeys-js';
 
 interface UseShortcutsOptions {
   onOpenTagDialog: () => void;
-  onOpenContentDialog: () => void;
   onNavigateUp: () => void;
   onNavigateDown: () => void;
   onDelete: () => void;
@@ -17,7 +16,6 @@ interface UseShortcutsOptions {
 
 export function useShortcuts({ 
   onOpenTagDialog, 
-  onOpenContentDialog, 
   onNavigateUp, 
   onNavigateDown,
   onDelete,
@@ -33,12 +31,6 @@ export function useShortcuts({
     hotkeys('c', (event) => {
       event.preventDefault();
       onOpenTagDialog();
-    });
-
-    // Appuyer sur v pour ouvrir la popup de contenu
-    hotkeys('v', (event) => {
-      event.preventDefault();
-      onOpenContentDialog();
     });
 
     // Appuyer sur e pour éditer l'élément sélectionné
@@ -98,7 +90,6 @@ export function useShortcuts({
     // Cleanup
     return () => {
       hotkeys.unbind('c');
-      hotkeys.unbind('v');
       hotkeys.unbind('e');
       hotkeys.unbind('up');
       hotkeys.unbind('down');
@@ -109,5 +100,5 @@ export function useShortcuts({
       hotkeys.unbind('del, delete');
       hotkeys.unbind('h');
     };
-  }, [onOpenTagDialog, onOpenContentDialog, onNavigateUp, onNavigateDown, onDelete, onEdit, onMoveUp, onMoveDown, onIndent, onUnindent, onOpenHelp]);
+  }, [onOpenTagDialog, onNavigateUp, onNavigateDown, onDelete, onEdit, onMoveUp, onMoveDown, onIndent, onUnindent, onOpenHelp]);
 }

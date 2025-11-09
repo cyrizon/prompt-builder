@@ -28,10 +28,6 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange }) =>
                 <span>Créer une nouvelle balise</span>
                 <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">C</kbd>
               </div>
-              <div className="flex items-center justify-between">
-                <span>Insérer du contenu seul</span>
-                <kbd className="px-3 py-1.5 bg-accent rounded font-mono text-sm">V</kbd>
-              </div>
             </div>
           </div>
 
