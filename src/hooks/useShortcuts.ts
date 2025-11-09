@@ -8,6 +8,10 @@ interface UseShortcutsOptions {
   onNavigateDown: () => void;
   onDelete: () => void;
   onEdit: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  onIndent: () => void;
+  onUnindent: () => void;
 }
 
 export function useShortcuts({ 
@@ -16,7 +20,11 @@ export function useShortcuts({
   onNavigateUp, 
   onNavigateDown,
   onDelete,
-  onEdit
+  onEdit,
+  onMoveUp,
+  onMoveDown,
+  onIndent,
+  onUnindent
 }: UseShortcutsOptions) {
   useEffect(() => {
     // Appuyer sur c pour ouvrir la popup d'insertion de balise
@@ -49,6 +57,30 @@ export function useShortcuts({
       onNavigateDown();
     });
 
+    // Alt+Flèche haut pour déplacer l'élément vers le haut
+    hotkeys('alt+up', (event) => {
+      event.preventDefault();
+      onMoveUp();
+    });
+
+    // Alt+Flèche bas pour déplacer l'élément vers le bas
+    hotkeys('alt+down', (event) => {
+      event.preventDefault();
+      onMoveDown();
+    });
+
+    // Tab pour indenter (augmenter le niveau)
+    hotkeys('tab', (event) => {
+      event.preventDefault();
+      onIndent();
+    });
+
+    // Shift+Tab pour désindenter (diminuer le niveau)
+    hotkeys('shift+tab', (event) => {
+      event.preventDefault();
+      onUnindent();
+    });
+
     // Suppr/Delete pour supprimer l'élément sélectionné
     hotkeys('del, delete', (event) => {
       event.preventDefault();
@@ -62,7 +94,11 @@ export function useShortcuts({
       hotkeys.unbind('e');
       hotkeys.unbind('up');
       hotkeys.unbind('down');
+      hotkeys.unbind('alt+up');
+      hotkeys.unbind('alt+down');
+      hotkeys.unbind('tab');
+      hotkeys.unbind('shift+tab');
       hotkeys.unbind('del, delete');
     };
-  }, [onOpenTagDialog, onOpenContentDialog, onNavigateUp, onNavigateDown, onDelete, onEdit]);
+  }, [onOpenTagDialog, onOpenContentDialog, onNavigateUp, onNavigateDown, onDelete, onEdit, onMoveUp, onMoveDown, onIndent, onUnindent]);
 }
