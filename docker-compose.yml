@@ -6,8 +6,6 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: prompt-builder
-    networks:
-      - default
     expose:
       - "3001"  # Expose port for Nginx reverse proxy
     restart: unless-stopped
@@ -17,8 +15,3 @@ services:
       timeout: 3s
       retries: 3
       start_period: 5s
-
-networks:
-  default:
-    external: true
-    name: bridge
