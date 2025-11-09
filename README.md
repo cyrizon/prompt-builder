@@ -85,7 +85,85 @@ Open [http://localhost:3000](http://localhost:3000) to use the app.
 
 ```bash
 npm run build
-npm start
+```
+
+### Docker Deployment
+
+**Option 1: Avec Nginx intégré (port 8080)**
+
+```bash
+# Using Docker
+docker build -t prompt-builder .
+docker run -p 8080:80 prompt-builder
+
+# Using Docker Compose
+docker-compose up -d
+```
+
+Access the app at [http://localhost:8080](http://localhost:8080)
+
+**Option 2: Sans Nginx - Pour intégration avec Nginx existant** ⭐ Recommandé
+
+Cette option expose le container sur le réseau Docker sans mapper de port sur l'hôte.
+Votre Nginx existant pourra communiquer directement avec le container.
+
+```bash
+# Build et démarrer le container
+docker-compose -f docker-compose.standalone.yml up -d
+```
+
+**Configurer votre Nginx existant:**
+
+Le container `prompt-builder` sera accessible via le réseau Docker sur le port 3001.
+Ajoutez cette configuration à votre Nginx (exemple: `/etc/nginx/sites-available/prompt-builder`):
+
+```nginx
+# Sous-domaine
+server {
+    listen 80;
+    server_name prompt.yourdomain.com;
+
+    location / {
+        proxy_pass http://prompt-builder:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+Ou pour un sous-chemin (ex: `yourdomain.com/prompt-builder`):
+
+```nginx
+location /prompt-builder {
+    rewrite ^/prompt-builder(.*) $1 break;
+    proxy_pass http://prompt-builder:3001;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+```
+
+Rechargez Nginx:
+
+```bash
+# Test de configuration
+sudo nginx -t
+
+# Recharger
+sudo nginx -s reload
+# ou
+docker exec nginx nginx -s reload
+```
+
+To stop the container:
+
+```bash
+docker-compose down
+# or
+docker-compose -f docker-compose.standalone.yml down
 ```
 
 ## ⌨️ Keyboard Shortcuts
