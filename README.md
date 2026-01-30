@@ -1,5 +1,7 @@
 # 🚀 Interactive XML Prompt Builder
 
+![Image de presentation](public/xml_prompt_builder_presentation.png)
+
 A visual tool for creating structured XML prompts for AI language models. Build complex, well-formatted prompts with an intuitive tree-based interface and keyboard shortcuts.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
